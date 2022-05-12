@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+for DIR in $MKDIRS ; do
+  mkdir -p "$DIR" && chown -R www-data.www-data "$DIR"
+done
+
+/bin/sh -c "${@}"
