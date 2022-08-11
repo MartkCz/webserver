@@ -1,11 +1,14 @@
 REPO:=martkcz/webserver
-VERSION:=8.1.3-r2
+VERSION:=8.1.8-r3
 PHP:=81
 
 all: build release
 
 build:
 	docker build --build-arg "PHP=${PHP}" -t $(REPO):${VERSION} .
+
+build-force:
+	docker build --build-arg "PHP=${PHP}" --no-cache -t $(REPO):${VERSION} .
 
 release:
 	docker push $(REPO):${VERSION}

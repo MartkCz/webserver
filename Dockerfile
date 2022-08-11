@@ -1,4 +1,4 @@
-FROM alpine:3.15
+FROM alpine:3.16
 
 ARG PHP
 
@@ -33,10 +33,10 @@ ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so
 
 RUN apk --no-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/main add \
     icu-libs \
-    && apk --no-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/community add \
+    && apk --no-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/main add \
     # Current packages don't exist in other repositories
     libavif \
-    && apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ --allow-untrusted gnu-libiconv \
+    && apk add --no-cache --allow-untrusted gnu-libiconv \
     # Packages \
     curl \
     php$PHP_SUFFIX \
@@ -44,6 +44,7 @@ RUN apk --no-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/main 
     php$PHP_SUFFIX-common \
     php$PHP_SUFFIX-gd \
     php$PHP_SUFFIX-xmlreader \
+    php$PHP_SUFFIX-xmlwriter \
     php$PHP_SUFFIX-fileinfo \
     php$PHP_SUFFIX-bcmath \
     php$PHP_SUFFIX-ctype \
@@ -72,8 +73,7 @@ RUN apk --no-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/main 
     php$PHP_SUFFIX-pdo_mysql \
     php$PHP_SUFFIX-tokenizer \
     php$PHP_SUFFIX-soap \
-    # Iconv Fix
-    php$PHP_SUFFIX-pecl-apcu
+    php$PHP_SUFFIX-pecl-apcu # Iconv Fix
 
 # Nginx + supervisor
 
@@ -113,7 +113,7 @@ COPY conf/nginx/nginx.conf "$BUILD_CONFIG_NGINX"
 # Configs supervisor
 COPY conf/supervisor/supervisord.conf "$BUILD_CONFIG_SUPERVISOR"
 
-RUN mkdir -p /app/www && mkdir /.composer
+RUN mkdir -p /app/www /home/www-data/log /home/www-data/tmp && mkdir /.composer
 
 RUN chown -R www-data.www-data /app && \
     chown -R www-data.www-data /run && \
